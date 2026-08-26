@@ -14,6 +14,11 @@ import com.nttdata.curso.springboot.webapp.springboot_web.models.dto.ParamDto;
 @RestController
 @RequestMapping("/api/var")
 public class PathVariableController {
+    /* El path variable es mas comun en las APIs REST ya que 
+     * permite identificar recursos de manera unica y consistente.
+     * ademas que es mas amigable para los motores de busqueda y para la navegacion de los usuarios. 
+    */
+
     @GetMapping("/baz/{message}/{code}")
     public ParamDto baz(@PathVariable String message, @PathVariable Integer code) {
         ParamDto paramDto = new ParamDto();
