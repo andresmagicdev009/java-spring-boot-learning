@@ -1,9 +1,12 @@
 package com.nttdata.curso.springboot.webapp.springboot_web.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nttdata.curso.springboot.webapp.springboot_web.models.dto.ParamDto;
 import com.nttdata.curso.springboot.webapp.springboot_web.models.dto.User;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 
 @RestController
@@ -37,6 +38,21 @@ public class PathVariableController {
     @Value("${config.code}")
     private Integer code;
 
+    // Con el signo # gato podemos trabajar con values como expresiones de Spring EL, en este caso estamos usando el metodo split para convertir un String en un array de Strings y luego lo convertimos en una lista.
+    @Value("#{ '${config.listOfValues}'.split(',') }")
+    private List<String> valueList;
+
+    @Value("#{${config.valuesMap}}")
+    private Map<String, Object> valuesMap;
+
+    @Value("#{${config.valuesMap}.product}")
+    private String product;
+
+    @Value("#{${config.valuesMap}.price}")
+    private Double price;
+
+    @Autowired
+    private Environment env;
 
     @GetMapping("/baz/{message}/{code}")
     public ParamDto baz(@PathVariable String message, @PathVariable Integer code) {
@@ -71,7 +87,13 @@ public class PathVariableController {
         Map<String, Object> json = new HashMap<>();
         json.put("username", username);
         json.put("message", message);
+        json.put("message", env.getProperty("config.message"));
+        json.put("code2", env.getProperty("config.code", Integer.class));
         json.put("listOfValues", listOfValues);
+        json.put("valueList", valueList);
+        json.put("valuesMap", valuesMap);
+        json.put("product", product);
+        json.put("price", price);
         json.put("code", code);
         return json;
     }
